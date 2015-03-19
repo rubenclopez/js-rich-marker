@@ -55,6 +55,10 @@ function RichMarker(opt_options) {
     opt_options['anchor'] = RichMarkerPosition['BOTTOM'];
   }
 
+  if (opt_options['paneRenderLevel'] == undefined) {
+    opt_options['paneRenderLevel'] = 'overlayMouseTarget';
+  }
+
   this.setValues(options);
 }
 RichMarker.prototype = new google.maps.OverlayView();
@@ -101,7 +105,7 @@ RichMarker.prototype['visible_changed'] = RichMarker.prototype.visible_changed;
  * @param {boolean} flat If the marker is to be flat or not.
  */
 RichMarker.prototype.setFlat = function(flat) {
-  this.set('flat', !!flat);
+  this.set('paneRenderLevel', !!flat);
 };
 RichMarker.prototype['setFlat'] = RichMarker.prototype.setFlat;
 
@@ -115,6 +119,23 @@ RichMarker.prototype.getFlat = function() {
   return /** @type {boolean} */ (this.get('flat'));
 };
 RichMarker.prototype['getFlat'] = RichMarker.prototype.getFlat;
+
+
+// Set panel render level
+
+RichMarker.prototype.setPaneRenderLevel = function(level) {
+  this.set('paneRenderLevel', level);
+};
+RichMarker.prototype['setPaneRenderLevel'] = RichMarker.prototype.setPaneRenderLevel;
+
+// --
+
+RichMarker.prototype.getPaneRenderLevel = function(level) {
+  return (this.get('paneRenderLevel'));
+};
+RichMarker.prototype['getPaneRenderLevel'] = RichMarker.prototype.getPaneRenderLevel;
+
+//
 
 
 /**
@@ -746,7 +767,7 @@ RichMarker.prototype.onAdd = function() {
 
   var panes = this.getPanes();
   if (panes) {
-    panes.overlayMouseTarget.appendChild(this.markerWrapper_);
+    panes[this.get('paneRenderLevel')].appendChild(this.markerWrapper_);
   }
 
   google.maps.event.trigger(this, 'ready');
